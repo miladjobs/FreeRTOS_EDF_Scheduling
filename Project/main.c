@@ -98,15 +98,10 @@
 
 /* --------------------------------------------- */
 #ifdef CH3_TASKMANAGEMENT
-#if ( configUSE_EDF_SCHEDULER == 0 )
 void vTask1(void*);
 void vTask2(void*);
 void vTask3(void*);
 void vTask4(void*);
-#else
-void TSK_A(void*);
-void TSK_B(void*);
-#endif
 
 #endif
 
@@ -116,16 +111,11 @@ int main ( void )
 {
 #ifdef CH3_TASKMANAGEMENT
 	/* Creating Two Task Same Priorities and Delay*/
-//	xTaskCreate( vTask1, "Task 1", configMINIMAL_STACK_SIZE, NULL, 1, NULL );
-//	xTaskCreate( vTask2, "Task 2", configMINIMAL_STACK_SIZE, NULL, 1, NULL );
+//	xTaskCreate( vTask1, "Task 1", 1000, NULL, 1, NULL );
+//	xTaskCreate( vTask2, "Task 2", 1000, NULL, 1, NULL );
 	/* Creating Two Task Same Priorities and DelayUntil*/
-	#if ( configUSE_EDF_SCHEDULER == 1 )
-	xTaskPeriodicCreate( TSK_A, "Task A", 1000, NULL, 1, NULL, 5 );
-	xTaskPeriodicCreate( TSK_B, "Task B", 1000, NULL, 1, NULL, 8 );
-	#else
 	xTaskCreate( vTask3, "Task 3", 1000, NULL, 1, NULL );
 	xTaskCreate( vTask4, "Task 4", 1000, NULL, 1, NULL );
-	#endif
 #endif
 
 	vTaskStartScheduler();
@@ -145,7 +135,6 @@ void vAssertCalled( unsigned long ulLine, const char * const pcFileName )
 
 
 #ifdef CH3_TASKMANAGEMENT
-#if ( configUSE_EDF_SCHEDULER == 0 )
 void vTask1(void* parameter)
 {
     while(1){
@@ -172,61 +161,11 @@ void vTask4(void* parameter)
 {
 	TickType_t xLastWaketime = xTaskGetTickCount();
     while(1){
-        printf("Task 4 with 300ms\n");
-        vTaskDelayUntil(&xLastWaketime, pdMS_TO_TICKS(300));
+        printf("Task 4 with 500ms\n");
+        vTaskDelayUntil(&xLastWaketime, pdMS_TO_TICKS(500));
     }
 }
-#else
-void TSK_A(void* parameter)
-{
-	TickType_t xLastWakeTimeA;
-	const TickType_t xFrequency = 5; //tsk A frequency
-	volatile int count = 2;     //tsk A capacity
-	xLastWakeTimeA = 0;
-	while(1)
-	{	
-		printf("Task A with period 5\n");
-		TickType_t xTime = xTaskGetTickCount ();
-		TickType_t x;
-		while(count != 0)
-		{
-			if(( x = xTaskGetTickCount () ) > xTime)
-			{
-				xTime = x;
-				count--;
-			}
-		}
-		
-		count = 2;
-		vTaskDelayUntil( &xLastWakeTimeA, xFrequency );
-	}
-	
-}
-void TSK_B(void* parameter)
-{
-	TickType_t xLastWakeTimeB;
-	const TickType_t xFrequency = 8; //tsk B frequency
-	volatile int count = 2;     //tsk B capacity
-	xLastWakeTimeB = 0;
-	while(1)
-	{
-		printf("Task B with period 8\n");
-		TickType_t xTime = xTaskGetTickCount ();
-		TickType_t x;
-		while(count != 0)
-		{
-			if(( x = xTaskGetTickCount () ) > xTime)
-			{
-				xTime = x;
-				count--;
-			}
-		}
-		count = 2;
-		vTaskDelayUntil( &xLastWakeTimeB, xFrequency );
-	}
-	
-}
-#endif
+
 #endif
 /* CH3_TASKMANAGEMENT ends */
 
