@@ -95,6 +95,9 @@
 //#include "queue.h"
 /* Examples */
 #define CH3_TASKMANAGEMENT
+#define Count 2
+#define AFreq 5
+#define Bfreq 8
 
 /* --------------------------------------------- */
 #ifdef CH3_TASKMANAGEMENT
@@ -111,6 +114,9 @@ void TSK_B(void*);
 #endif
 
 void vApplicationIdleHook(void);
+
+int ANumberOfPeriod = 1;
+int BNumberOfPeriod = 1;
 
 int main ( void )
 {
@@ -180,12 +186,12 @@ void vTask4(void* parameter)
 void TSK_A(void* parameter)
 {
 	TickType_t xLastWakeTimeA;
-	const TickType_t xFrequency = 5; //tsk A frequency
-	volatile int count = 2;     //tsk A capacity
+	const TickType_t xFrequency = AFreq; //tsk A frequency
+	volatile int count = Count;     //tsk A capacity
 	xLastWakeTimeA = 0;
 	while(1)
 	{	
-		printf("Task A with period 5\n");
+		printf("Tick %d: Task A In\n", xTaskGetTickCount ());
 		TickType_t xTime = xTaskGetTickCount ();
 		TickType_t x;
 		while(count != 0)
@@ -196,8 +202,9 @@ void TSK_A(void* parameter)
 				count--;
 			}
 		}
-		
-		count = 2;
+		printf("Tick %d: Task A Out with deadLine  %d\n", xTaskGetTickCount (), 5* ANumberOfPeriod);
+		ANumberOfPeriod += 1;
+		count = Count;
 		vTaskDelayUntil( &xLastWakeTimeA, xFrequency );
 	}
 	
@@ -205,12 +212,12 @@ void TSK_A(void* parameter)
 void TSK_B(void* parameter)
 {
 	TickType_t xLastWakeTimeB;
-	const TickType_t xFrequency = 8; //tsk B frequency
-	volatile int count = 2;     //tsk B capacity
+	const TickType_t xFrequency = Bfreq; //tsk B frequency
+	volatile int count = Count;     //tsk B capacity
 	xLastWakeTimeB = 0;
 	while(1)
 	{
-		printf("Task B with period 8\n");
+		printf("Tick %d: Task B In\n", xTaskGetTickCount ());
 		TickType_t xTime = xTaskGetTickCount ();
 		TickType_t x;
 		while(count != 0)
@@ -221,7 +228,9 @@ void TSK_B(void* parameter)
 				count--;
 			}
 		}
-		count = 2;
+		printf("Tick %d: Task B Out with deadLine  %d\n", xTaskGetTickCount (), 8*BNumberOfPeriod);
+		BNumberOfPeriod += 1;
+		count = Count;
 		vTaskDelayUntil( &xLastWakeTimeB, xFrequency );
 	}
 	
