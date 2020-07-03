@@ -14,3 +14,6 @@ FreeRTOS with EDF algorithm scheduling
   - set ```configUSE_EDF_SCHEDULER = 0``` in FreeRTOSConfig.h
   - ```$ make```
   - ```$ ./FreeRTOS-Sim```
+  
+ # Results
+  ![Result](results.png)
