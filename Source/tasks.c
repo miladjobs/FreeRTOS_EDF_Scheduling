@@ -2049,7 +2049,7 @@ BaseType_t xReturn;
 	{
 		/* The Idle task is being created using dynamically allocated RAM. */
 		#if(configUSE_EDF_SCHEDULER == 1)
-			TickType_t initIDLEPeriod = 100;
+			TickType_t initIDLEPeriod = 90000;
 			xReturn = xTaskPeriodicCreate(	prvIdleTask,
 								configIDLE_TASK_NAME,
 								configMINIMAL_STACK_SIZE,
