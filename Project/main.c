@@ -95,9 +95,9 @@
 //#include "queue.h"
 /* Examples */
 #define CH3_TASKMANAGEMENT
-#define Count 2
-#define AFreq 5
-#define Bfreq 8
+#define Count 20
+#define AFreq 50
+#define Bfreq 80
 
 /* --------------------------------------------- */
 #ifdef CH3_TASKMANAGEMENT
@@ -126,7 +126,7 @@ int main ( void )
 //	xTaskCreate( vTask2, "Task 2", configMINIMAL_STACK_SIZE, NULL, 1, NULL );
 	/* Creating Two Task Same Priorities and DelayUntil*/
 	#if ( configUSE_EDF_SCHEDULER == 1 )
-	xTaskPeriodicCreate( TSK_A, "Task A", 1000, NULL, 1, NULL, 5 );
+	xTaskPeriodicCreate( TSK_A, "Task A", 1000, NULL, 2, NULL, 5 );
 	xTaskPeriodicCreate( TSK_B, "Task B", 1000, NULL, 1, NULL, 8 );
 	#else
 	xTaskCreate( vTask3, "Task 3", 1000, NULL, 1, NULL );
@@ -191,7 +191,7 @@ void TSK_A(void* parameter)
 	xLastWakeTimeA = 0;
 	while(1)
 	{	
-		printf("Tick %d: Task A In\n", xTaskGetTickCount ());
+		printf("Tick %3d: Task A In with start  %3d\n", xTaskGetTickCount (), AFreq * (ANumberOfPeriod - 1));
 		TickType_t xTime = xTaskGetTickCount ();
 		TickType_t x;
 		while(count != 0)
@@ -202,7 +202,7 @@ void TSK_A(void* parameter)
 				count--;
 			}
 		}
-		printf("Tick %d: Task A Out with deadLine  %d\n", xTaskGetTickCount (), 5* ANumberOfPeriod);
+		printf("Tick %3d: Task A Out with deadLine  %3d\n", xTaskGetTickCount (), AFreq* ANumberOfPeriod);
 		ANumberOfPeriod += 1;
 		count = Count;
 		vTaskDelayUntil( &xLastWakeTimeA, xFrequency );
@@ -213,11 +213,11 @@ void TSK_B(void* parameter)
 {
 	TickType_t xLastWakeTimeB;
 	const TickType_t xFrequency = Bfreq; //tsk B frequency
-	volatile int count = Count;     //tsk B capacity
+	volatile int count = 2*Count;     //tsk B capacity
 	xLastWakeTimeB = 0;
 	while(1)
 	{
-		printf("Tick %d: Task B In\n", xTaskGetTickCount ());
+		printf("Tick %3d: Task B In with start  %3d\n", xTaskGetTickCount (), Bfreq*(BNumberOfPeriod - 1));
 		TickType_t xTime = xTaskGetTickCount ();
 		TickType_t x;
 		while(count != 0)
@@ -228,9 +228,9 @@ void TSK_B(void* parameter)
 				count--;
 			}
 		}
-		printf("Tick %d: Task B Out with deadLine  %d\n", xTaskGetTickCount (), 8*BNumberOfPeriod);
+		printf("Tick %3d: Task B Out with deadLine  %3d\n", xTaskGetTickCount (), Bfreq*BNumberOfPeriod);
 		BNumberOfPeriod += 1;
-		count = Count;
+		count = 2*Count;
 		vTaskDelayUntil( &xLastWakeTimeB, xFrequency );
 	}
 	
