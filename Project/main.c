@@ -126,7 +126,7 @@ int main ( void )
 //	xTaskCreate( vTask2, "Task 2", configMINIMAL_STACK_SIZE, NULL, 1, NULL );
 	/* Creating Two Task Same Priorities and DelayUntil*/
 	#if ( configUSE_EDF_SCHEDULER == 1 )
-	xTaskPeriodicCreate( TSK_A, "Task A", 1000, NULL, 2, NULL, 5 );
+	xTaskPeriodicCreate( TSK_A, "Task A", 1000, NULL, 1, NULL, 5 );
 	xTaskPeriodicCreate( TSK_B, "Task B", 1000, NULL, 1, NULL, 8 );
 	#else
 	xTaskCreate( vTask3, "Task 3", 1000, NULL, 1, NULL );
